@@ -5,8 +5,6 @@ import javax.swing.*;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 
 public class naveJugador_201700584 {
@@ -14,12 +12,12 @@ public class naveJugador_201700584 {
 
 class naveJugador{
     private File ubicacionIMG;
-    private int dy;
-    private int y;
+    private int YMover;
+    private int YJugador;
     private Image imagenJugador;
     
     public naveJugador(){
-        y = 60;
+        YJugador = 60;
         try {
             ubicacionIMG = new File("src/Imagenes/navesJugador/naveEspacial3.jpg");
             imagenJugador = ImageIO.read(ubicacionIMG);
@@ -32,10 +30,18 @@ class naveJugador{
         int tecla = e.getKeyCode();//Tomar el codigo de la tecla presionada
         
         if(tecla == KeyEvent.VK_UP){
-            dy = -10;
+            if(YJugador > 10){
+                YMover = -10;
+            }else if(YJugador < 10){
+                YMover = 0;
+            }
         }
         if(tecla == KeyEvent.VK_DOWN){
-            dy = 10;
+            if(YJugador < 400){
+                YMover = 10;
+            }else if(YJugador > 400){
+                YMover = 0;
+            }
         }
     }
     
@@ -44,23 +50,23 @@ class naveJugador{
         int tecla = e.getKeyCode();//Tomar el codigo de la tecla presionada
         
         if(tecla == KeyEvent.VK_UP){
-            dy = 0;
+            YMover = 0;
         }
         if(tecla == KeyEvent.VK_DOWN){
-            dy =0;
+            YMover =0;
         }
     }
     
     //METODO PARA MOVER LA IMAGEN-----------------------------------------------------------------------------------------------
     public void moverNaveJugador(){
-        y+=dy;
+        YJugador+=YMover;
     }
     
     //Funciones PARA RETORNAR LOS VALORES
-    public int retornarY(){
-        return y;
+    public int retornarY(){//Retornar la posicion
+        return YJugador;
     }
-    public Image retornarImagen(){//Retornar que es lo que contiene
+    public Image retornarImagen(){//Retornar la imagen
         return imagenJugador;
     }
 }

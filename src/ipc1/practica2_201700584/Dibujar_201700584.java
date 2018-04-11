@@ -4,22 +4,42 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.*;
 import javax.swing.*;
 
 public class Dibujar_201700584 {
     
 }
-class Dibujar extends JPanel implements ActionListener{
+class Dibujar extends JPanel implements ActionListener {
     
     naveJugador naveJugador = new naveJugador();
-    Timer timer = new Timer(100,this);
+    disparoJugador disparo = new disparoJugador();
+    naveEnemiga enemiga = new naveEnemiga();
+    
+    Timer timer = new Timer(5,this);
     Image imagenFondo;
     File ubicacionFondo;
+    static int YP;
     
     public Dibujar(){
-        setFocusable(true);
-        addKeyListener(new teclado());
+        
+        
+        try {
+            AudioInputStream sonido = AudioSystem.getAudioInputStream(new File("src/Audio/TruecolorAlchemist.wav").getAbsoluteFile());
+            Clip clip = AudioSystem.getClip();
+            clip.open(sonido);
+            clip.start();
+        } catch (LineUnavailableException | UnsupportedAudioFileException | IOException ex) {
+            Logger.getLogger(Dibujar.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        
+        setFocusable(true);//Establecer la imagen en el JPanel
+        addKeyListener(new teclado());//Que el teclado este a la escucha
         timer.start();
     }
     
@@ -37,17 +57,23 @@ class Dibujar extends JPanel implements ActionListener{
         
         Graphics2D g2 = (Graphics2D)g;
         g2.drawImage(naveJugador.retornarImagen(), 700, naveJugador.retornarY(), 50, 50, null);
+        g2.drawImage(disparo.retornarImagenDisparo(), disparo.XDisparo, disparo.YDisparo, 30, 15, this);
+        g2.drawImage(enemiga.retornarImagenEnemiga(), enemiga.XEnemiga, enemiga.YEnemiga, 70, 70, this);
+        g2.drawImage(disparo.imagenExplosion, disparo.XPosicionExplosion, disparo.YPosicionExplosion, 70, 70, this);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         naveJugador.moverNaveJugador();
+        YP = naveJugador.retornarY();
         repaint();
     }
+
     
-    private class teclado extends KeyAdapter{
+    private class teclado extends KeyAdapter{//Accion al presioanr una tecla
         public void keyPressed(KeyEvent e){
             naveJugador.keyPressed(e);
+            disparo.keyPressed(e);
         }
         public void keyReleased(KeyEvent e){
             naveJugador.keyReleased(e);
