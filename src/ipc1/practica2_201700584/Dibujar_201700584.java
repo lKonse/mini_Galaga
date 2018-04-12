@@ -20,7 +20,7 @@ class Dibujar extends JPanel implements ActionListener {
     disparoJugador disparo = new disparoJugador();
     naveEnemiga enemiga = new naveEnemiga();
     
-    Timer timer = new Timer(5,this);
+    Timer timer = new Timer(1,this);
     Image imagenFondo;
     File ubicacionFondo;
     static int YP;
@@ -28,19 +28,21 @@ class Dibujar extends JPanel implements ActionListener {
     public Dibujar(){
         
         
-        try {
-            AudioInputStream sonido = AudioSystem.getAudioInputStream(new File("src/Audio/TruecolorAlchemist.wav").getAbsoluteFile());
-            Clip clip = AudioSystem.getClip();
-            clip.open(sonido);
-            clip.start();
-        } catch (LineUnavailableException | UnsupportedAudioFileException | IOException ex) {
-            Logger.getLogger(Dibujar.class.getName()).log(Level.SEVERE, null, ex);
-        }
+//        try {
+//            AudioInputStream sonido = AudioSystem.getAudioInputStream(new File("src/Audio/TruecolorAlchemist.wav").getAbsoluteFile());
+//            Clip clip = AudioSystem.getClip();
+//            clip.open(sonido);
+//            clip.start();
+//        } catch (LineUnavailableException | UnsupportedAudioFileException | IOException ex) {
+//            Logger.getLogger(Dibujar.class.getName()).log(Level.SEVERE, null, ex);
+//        }
         
+        naveEnemiga.hiloNaveEnemiga.start();
         
         setFocusable(true);//Establecer la imagen en el JPanel
         addKeyListener(new teclado());//Que el teclado este a la escucha
         timer.start();
+        
     }
     
     @Override
@@ -58,8 +60,14 @@ class Dibujar extends JPanel implements ActionListener {
         Graphics2D g2 = (Graphics2D)g;
         g2.drawImage(naveJugador.retornarImagen(), 700, naveJugador.retornarY(), 50, 50, null);
         g2.drawImage(disparo.retornarImagenDisparo(), disparo.XDisparo, disparo.YDisparo, 30, 15, this);
-        g2.drawImage(enemiga.retornarImagenEnemiga(), enemiga.XEnemiga, enemiga.YEnemiga, 70, 70, this);
-        g2.drawImage(disparo.imagenExplosion, disparo.XPosicionExplosion, disparo.YPosicionExplosion, 70, 70, this);
+        g2.drawImage(disparo.gifExplosion, disparo.XExplosion, disparo.YExplosion, 50, 50, this);
+        
+        for(int n = 0; n < enemiga.navesSalir; n++){
+            if(enemiga.existe[n].equals("En Movimiento")){
+                g2.drawImage(enemiga.imagenNaveEnemiga[n], enemiga.XEnemiga[n], enemiga.YEnemiga[n], 70, 70, this);
+                
+            }
+        }
     }
 
     @Override

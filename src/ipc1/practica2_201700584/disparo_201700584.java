@@ -18,13 +18,13 @@ class disparoJugador implements Runnable{
     
     naveJugador naveJugador = new naveJugador();
     
-    private File ubicacionDisparo, ubicacionExplosion;
+    private File ubicacionDisparo;
     private Image imagenDisparo;
-    static Image imagenExplosion;
-    static int XDisparo = 1200, YDisparo, moverDisparoX;
+    static Image gifExplosion;
+    static int XDisparo = 1200, YDisparo, moverDisparoX, XExplosion = 1200, YExplosion;
     
     int b = 0;
-    int golpes = 0;
+    int[] golpes = new int[80];
     int XPosicionExplosion = 1200, YPosicionExplosion = 100;
     
     static Thread hiloDisparo;
@@ -32,7 +32,7 @@ class disparoJugador implements Runnable{
     public disparoJugador(){
         hiloDisparo = new Thread(this);
         
-        imagenExplosion = Toolkit.getDefaultToolkit().createImage("src/Imagenes/Explosiones/Explosion1.gif");
+        gifExplosion = Toolkit.getDefaultToolkit().createImage("src/Imagenes/Explosiones/Explosion1.gif");
 
         try{
             ubicacionDisparo = new File("src/Imagenes/Explosiones/disparo.png");
@@ -62,34 +62,39 @@ class disparoJugador implements Runnable{
     public void run() {
         try {
             while(true){
-                if(XDisparo <= 0){//Cuando llegue a 0 que se suspenda el proceso
+                
+                if(XDisparo == 0){//Cuando llegue a 0 que se suspenda el proceso
                     XDisparo = 1200;
                     hiloDisparo.suspend(); 
                 }
                 
-                audioDisparo("src/Audio/sonidoDisparoJugador.wav");
-                XDisparo = 700;
-                YDisparo = Dibujar.YP + 18;
-                while(XDisparo > 0){
-                    
-                    Thread.sleep(2);
-                    XDisparo -= 1;
+                else{
+                    audioDisparo("src/Audio/sonidoDisparoJugador.wav");
+                    XDisparo = 700;
+                    YDisparo = Dibujar.YP + 18;
                     b = 1;
-                    
-                    //EN CASO QUE LE DE A UNA NAVE-------------------------------------------------------------------
-                    for(int n = 1; n <= 50; n++){
-                        if(XDisparo == naveEnemiga.XEnemiga && YDisparo == naveEnemiga.YEnemiga+n){
-                            
-                            if(golpes < 2){
-                                golpes++;
-                            }
-                            else if(golpes == 2){
-                                
-                                XPosicionExplosion = naveEnemiga.XEnemiga;
-                                YPosicionExplosion = naveEnemiga.YEnemiga;
-                                naveEnemiga.XEnemiga = 1200;
-                                Thread.sleep(400);
-                                XPosicionExplosion = 1200;
+                    while(XDisparo > 0){
+                        Thread.sleep(1);
+                        XDisparo -= 1;
+                        
+                        for(int m = 0; m < naveEnemiga.navesSalir; m++){
+                            for(int n = 1; n < 50; n++){
+                                if(XDisparo == naveEnemiga.XEnemiga[m] && YDisparo == naveEnemiga.YEnemiga[m]+n){
+                                    YDisparo = 1200;
+                                    if(golpes[m] < 2){
+                                    golpes[m]++;
+                                    }
+                                    else if(golpes[m] == 2){
+                                        
+                                        XExplosion = naveEnemiga.XEnemiga[m]+10;
+                                        YExplosion = naveEnemiga.YEnemiga[m]+10;
+                                        naveEnemiga.XEnemiga[m] = 3000;
+                                        
+                                        Thread.sleep(400);
+                                        XExplosion = 1200;
+                                        
+                                    }
+                                }
                             }
                         }
                     }

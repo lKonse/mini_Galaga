@@ -17,7 +17,7 @@ class naveJugador{
     private Image imagenJugador;
     
     public naveJugador(){
-        YJugador = 60;
+        YJugador = 200;
         try {
             ubicacionIMG = new File("src/Imagenes/navesJugador/naveEspacial3.jpg");
             imagenJugador = ImageIO.read(ubicacionIMG);
